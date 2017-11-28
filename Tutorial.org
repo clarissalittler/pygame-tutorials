@@ -222,6 +222,11 @@ https://upload.wikimedia.org/wikipedia/commons/f/f8/Pong.png
               elif key == pygame.K_DOWN:
                   playerRect = playerRect.move(0,15)
 
+      if ballRect.y < enemyRect.top:
+          enemyRect = enemyRect.move(0,-5)
+      elif ballRect.y > enemyRect.bottom:
+          enemyRect = enemyRect.move(0,5)
+
       screen.fill(backgroundColor)
       #displayScore
       pscore = font.render(str(playerScore),True,blockColor)
@@ -253,5 +258,5 @@ https://upload.wikimedia.org/wikipedia/commons/f/f8/Pong.png
 
       pygame.display.flip()
 
-      clock.tick(30)
+      clock.tick(60)
 #+END_SRC

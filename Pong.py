@@ -51,6 +51,11 @@ while not done:
             elif key == pygame.K_DOWN:
                 playerRect = playerRect.move(0,15)
 
+    if ballRect.y < enemyRect.top:
+        enemyRect = enemyRect.move(0,-5)
+    elif ballRect.y > enemyRect.bottom:
+        enemyRect = enemyRect.move(0,5)
+
     screen.fill(backgroundColor)
     #displayScore
     pscore = font.render(str(playerScore),True,blockColor)
@@ -82,4 +87,4 @@ while not done:
 
     pygame.display.flip()
 
-    clock.tick(30)
+    clock.tick(60)
