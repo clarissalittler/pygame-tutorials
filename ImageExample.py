@@ -11,7 +11,7 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
     screen.fill((255,255,255))
-    image = pygame.image.load("2000px-Thumbs-up-icon-left.svg.png")
+    image = pygame.image.load("thumb.png")
     image = pygame.transform.scale(image,(100,100))
 
     screen.blit(image,[200,200])

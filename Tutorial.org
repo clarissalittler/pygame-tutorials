@@ -145,7 +145,7 @@ Similarly, we can render /images/ to the screen from files like this example
           if event.type == pygame.QUIT:
               done = True
       screen.fill((255,255,255))
-      image = pygame.image.load("2000px-Thumbs-up-icon-left.svg.png")
+      image = pygame.image.load("thumb.png")
       image = pygame.transform.scale(image,(100,100))
 
       screen.blit(image,[200,200])
@@ -156,7 +156,134 @@ The other concept that we've been implicitly using this whole time is the /rect/
   + drawing onto a surface
   + determining if two sprites are intersecting
 
-(TO FINISH)
+To draw a simple rectangle is easy:
+
+#+BEGIN_SRC python :exports code :tangle RectExample.py 
+  import pygame
+  pygame.init()
+
+  size = [640, 480]
+
+  screen = pygame.display.set_mode(size)
+
+  white = (255,255,255)
+  blue = (0,0,255)
+
+  playing = True
+
+  #rectangles are objects, which means that you make them
+  #with the constructor provided by PyGame
+  #To make a rectangle you provide the:
+  #   x-coordinate of the upper left corner
+  #   y-coordinate of the upper left corner
+  #   width
+  #   height
+  # Note that you're not giving it a color or anything like that, just shape
+  rec = pygame.Rect([320,240,100,100])
+
+  while playing:
+      for event in pygame.event.get():
+          if event.type ==pygame.QUIT:
+              playing = False
+      screen.fill(white)
+      #drawing a rectangle is done with the pygame.draw.rect function
+      #you give it the pygame surface to draw on, a color, and the rectangle object to draw
+      pygame.draw.rect(screen,blue,rec)
+      pygame.display.flip()
+#+END_SRC
+
+To move a rectangle, you have a few options. If you want to actually move an object on screen, probably the easiest to use would be the =rect.move_ip= function. The "ip" in this context meaning "in place", which means that it actually changes the rectangle itself rather than returning a copy of the rectangle with the position changed.
+
+You can modify your above code so that it whenever you press one of the WASD keys it moves the rectangle
+
+#+BEGIN_SRC python :exports code :tangle RectMove.py
+  import pygame
+  pygame.init()
+
+  size = [640, 480]
+
+  screen = pygame.display.set_mode(size)
+
+  white = (255,255,255)
+  blue = (0,0,255)
+
+  playing = True
+
+  rec = pygame.Rect([320,240,100,100])
+
+  while playing:
+      for event in pygame.event.get():
+          if event.type ==pygame.QUIT:
+              playing = False
+          #Here we test for the pygame.KEYDOWN event
+          #If this event fires, then we should see *what* key fired
+          #We test to see if the key was one of WASD and move the rect accordingly if it is
+          #for the move_ip function the first argument is how much to change the x-coordinate
+          #and the second is how much to change the y-coordinate
+          elif event.type ==pygame.KEYDOWN:
+              if event.key == pygame.K_a:
+                  rec.move_ip(-10,0)
+              elif event.key == pygame.K_d:
+                  rec.move_ip(10,0)
+              elif event.key == pygame.K_s:
+                  rec.move_ip(0,10)
+              elif event.key == pygame.K_w:
+                  rec.move_ip(0,-10)
+
+      screen.fill(white)
+      pygame.draw.rect(screen,blue,rec)
+      pygame.display.flip()
+#+END_SRC
+* Sprites
+Sprites in PyGame are represented by objects. You're not ever going to explicitly construct an object using the Sprite constructor, though.
+
+Instead, you're going to make your /own/ class that /inherits/ from the pygame.sprite.Sprite class to represent each kind of entity in your game: platforms, player controlled characters, enemy characters, etc.
+
+Here's an example that uses the thumbs up image from above:
+
+#+BEGIN_SRC python :exports code :tangle SpriteExample.py
+  import pygame
+  pygame.init()
+
+  size = [640,480]
+
+  screen = pygame.display.set_mode(size)
+
+  white = (255,255,255)
+
+  running = True
+
+  class Thumb(pygame.sprite.Sprite):
+      def __init__(self):
+          pygame.sprite.Sprite.__init__(self)
+          im = pygame.image.load("thumb.png")
+          self.image = pygame.transform.scale(im,(100,100))
+          self.rect = self.image.get_rect()
+
+  thumb = Thumb()
+  spriteList = pygame.sprite.Group()
+  spriteList.add(thumb)
+  clock = pygame.time.Clock()
+
+  while running:
+      for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+              running = False
+          elif event.type == pygame.KEYDOWN:
+              if event.key == pygame.K_w:
+                  thumb.rect.move_ip(0,-10)
+              elif event.key == pygame.K_s:
+                  thumb.rect.move_ip(0,10)
+              elif event.key == pygame.K_a:
+                  thumb.rect.move_ip(-10,0)
+              elif event.key == pygame.K_d:
+                  thumb.rect.move_ip(10,0)
+      screen.fill(white)
+      spriteList.draw(screen)
+      pygame.display.flip()
+
+      clock.tick(60)
+#+END_SRC
 
 * Making Pong
   Pong is kind of the "hello world" of games writing simply because, well, it was one of the first video games. 
