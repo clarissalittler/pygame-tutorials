@@ -354,6 +354,17 @@ So now our example is going to look like:
 
 #+END_SRC
 
+There's a few key ideas here. 
+
+The first is that of a /spritesheet/.
+
+The actual image of our little flappy creature is going to be
+[[FlappySpriteSheet.png]]
+
+You can see that there's actually /two/ images on this spritesheet representing the two frames of animation for the sprite. To actually animate a sprite we need to rapidly switch between them.
+
+To do that, we're going to define an /update/ function that will be used to keep changing which part of the spritesheet is going to be copied over. Every time the update function is called, we add one to our "tick" counter. If the counter is odd, we use the second frame of animation. If it's even, we use the first frame of animation.
+
 * Making Pong
   Pong is kind of the "hello world" of games writing simply because, well, it was one of the first video games. 
 
